@@ -24,6 +24,7 @@
       <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
       <maven.findbugs.plugin.version>2.5.4</maven.findbugs.plugin.version>
       <maven.cobertura.plugin.version>2.6</maven.cobertura.plugin.version>
+      <maven.sonar.plugin.version>0.1</maven.sonar.plugin.version>
   </properties>
 
   <parent>
@@ -100,6 +101,7 @@
       <plugin>
         <groupId>org.codehaus.sonar-plugins</groupId>
         <artifactId>maven-report</artifactId>
+        <version>${maven.sonar.plugin.version}</version>
       </plugin>
     </plugins>
   </reporting>

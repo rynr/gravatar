@@ -11,7 +11,8 @@ import org.rjung.util.Gravatar;
 
 class GravatarExample {
   public void main(String[] args) {
-    System.out.println(Gravatar.getInstance().imageUrl("example@example.com"));
+    System.out.println(Gravatar.getInstance().imageUrl(
+        "example@example.com"));
   }
 }
 ```

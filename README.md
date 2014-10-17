@@ -6,13 +6,15 @@ Simple class to generate Gravatar URL for a email-address.
 Usage:
 ------
 
-    import org.rjung.util.Gravatar;
-    
-    class GravatarExample {
-      public void main(String[] args) {
-        System.out.println(Gravatar.getInstance().imageUrl("example@example.com"));
-      }
-    }
+```java
+import org.rjung.util.Gravatar;
+
+class GravatarExample {
+  public void main(String[] args) {
+    System.out.println(Gravatar.getInstance().imageUrl("example@example.com"));
+  }
+}
+```
 
 Links:
 ------

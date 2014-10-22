@@ -74,7 +74,7 @@ public class Gravatar {
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, int size, Default def) {
-        return imageUrl(email, size) + "&d=" + def;
+        return imageUrl(email, size) + "&d=" + def.getCode();
     }
 
     /**
@@ -94,7 +94,7 @@ public class Gravatar {
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, int size, Default def, Rating rating) {
-        return imageUrl(email, size, def) + "&r=" + rating;
+        return imageUrl(email, size, def) + "&r=" + rating.getCode();
     }
 
     /**
@@ -107,7 +107,7 @@ public class Gravatar {
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, Default def) {
-        return imageUrl(email) + "&d=" + def;
+        return imageUrl(email) + "&d=" + def.getCode();
     }
 
     /**
@@ -120,7 +120,7 @@ public class Gravatar {
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, Default def, Rating rating) {
-        return imageUrl(email, def) + "&r=" + rating;
+        return imageUrl(email, def) + "&r=" + rating.getCode();
     }
 
     /**
@@ -135,7 +135,7 @@ public class Gravatar {
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, Rating rating) {
-        return imageUrl(email) + "&r=" + rating;
+        return imageUrl(email) + "&r=" + rating.getCode();
     }
 
     private String pureImageUrl(String email) {

@@ -5,8 +5,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 
+import org.rjung.util.gravatar.Default;
+import org.rjung.util.gravatar.Rating;
+
 /**
- * 
+ * {@link Gravatar} provides you different methods to easily retrieve a
+ * Gravatar-URL. This first version just allows Singleton-access to the methods.
  *
  */
 public class Gravatar {
@@ -40,11 +44,98 @@ public class Gravatar {
      * 
      * @param email
      *            Provide the email-address that is wanted to be converted.
-     * @return Complete URL of the email-addresses {@link Gravatar}r-image
-     *         (without any size or rating-information).
+     * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email) {
         return pureImageUrl(email);
+    }
+
+    /**
+     * 
+     * @param email
+     *            Provide the email-address that is wanted to be converted.
+     * @param size
+     *            The size of the gravatar image
+     * @return Complete URL of the email-addresses {@link Gravatar}-image.
+     */
+    public String imageUrl(String email, int size) {
+        return imageUrl(email) + "?s=" + size;
+    }
+
+    /**
+     * 
+     * @param email
+     *            Provide the email-address that is wanted to be converted.
+     * @param size
+     *            The size of the gravatar image
+     * @param def
+     *            Which default image should be used if no {@link Gravatar}
+     *            -image is available.
+     * @return Complete URL of the email-addresses {@link Gravatar}-image.
+     */
+    public String imageUrl(String email, int size, Default def) {
+        return imageUrl(email, size) + "&d=" + def;
+    }
+
+    /**
+     * 
+     * @param email
+     *            Provide the email-address that is wanted to be converted.
+     * @param size
+     *            The size of the gravatar image
+     * @param def
+     *            Which default image should be used if no {@link Gravatar}
+     *            -image is available.
+     * @param rating
+     *            Default Rating is
+     *            "suitable for display on all websites with any audience type".
+     *            Depending on your visitors, you could allow other ratings (
+     *            {@link https://gravatar.com/site/implement/images/}).
+     * @return Complete URL of the email-addresses {@link Gravatar}-image.
+     */
+    public String imageUrl(String email, int size, Default def, Rating rating) {
+        return imageUrl(email, size, def) + "&r=" + rating;
+    }
+
+    /**
+     * 
+     * @param email
+     *            Provide the email-address that is wanted to be converted.
+     * @param def
+     *            Which default image should be used if no {@link Gravatar}
+     *            -image is available.
+     * @return Complete URL of the email-addresses {@link Gravatar}-image.
+     */
+    public String imageUrl(String email, Default def) {
+        return imageUrl(email) + "&d=" + def;
+    }
+
+    /**
+     * 
+     * @param email
+     *            Provide the email-address that is wanted to be converted.
+     * @param def
+     *            Which default image should be used if no {@link Gravatar}
+     *            -image is available.
+     * @return Complete URL of the email-addresses {@link Gravatar}-image.
+     */
+    public String imageUrl(String email, Default def, Rating rating) {
+        return imageUrl(email, def) + "&r=" + rating;
+    }
+
+    /**
+     * 
+     * @param email
+     *            Provide the email-address that is wanted to be converted.
+     * @param rating
+     *            Default Rating is
+     *            "suitable for display on all websites with any audience type".
+     *            Depending on your visitors, you could allow other ratings (
+     *            {@link https://gravatar.com/site/implement/images/}).
+     * @return Complete URL of the email-addresses {@link Gravatar}-image.
+     */
+    public String imageUrl(String email, Rating rating) {
+        return imageUrl(email) + "&r=" + rating;
     }
 
     private String pureImageUrl(String email) {

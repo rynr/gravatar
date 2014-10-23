@@ -118,7 +118,7 @@ public class Gravatar {
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, Default def) {
-        return imageUrl(email) + "&d=" + def.getCode();
+        return imageUrl(email) + "?d=" + def.getCode();
     }
 
     /**
@@ -146,7 +146,7 @@ public class Gravatar {
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, Rating rating) {
-        return imageUrl(email) + "&r=" + rating.getCode();
+        return imageUrl(email) + "?r=" + rating.getCode();
     }
 
     private String pureImageUrl(String email) {

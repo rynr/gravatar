@@ -53,6 +53,28 @@ public class GravatarTest extends TestCase {
     }
 
     @Test
+    public void testGravatarWithDefault() {
+        assertThat(
+                Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL,
+                        Default.MONSTERID),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=monsterid"));
+    }
+
+    @Test
+    public void testGravatarWithDefaultAndRating() {
+        assertThat(
+                Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL,
+                        Default.MONSTERID, Rating.R),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=monsterid&r=r"));
+    }
+
+    @Test
+    public void testGravatarWithRating() {
+        assertThat(Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL, Rating.PG),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=pg"));
+    }
+
+    @Test
     public void testGravatarWithSizeDefaultAndRating() {
         assertThat(
                 Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL, 123,

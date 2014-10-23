@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>gravatar</name>
-  <url>http://github.com/rynr/gravatar</url>
+  <url>http://rynr.github.io/gravatar</url>
   <description>Simple class to generate Gravatar URL from a email-address.</description>
   <licenses>
     <license>

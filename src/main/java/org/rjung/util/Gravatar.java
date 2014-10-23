@@ -18,7 +18,10 @@ public class Gravatar {
     private static final String GRAVATAR_IMAGE_BASE_URL = "http://www.gravatar.com/avatar/";
 
     private static class GravatarHolder {
-        public static Gravatar instance = new Gravatar();
+        public static final Gravatar instance = new Gravatar();
+
+        private GravatarHolder() {
+        }
     }
 
     /**
@@ -144,7 +147,7 @@ public class Gravatar {
     }
 
     private String hex(byte[] array) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; ++i) {
             sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(
                     1, 3));

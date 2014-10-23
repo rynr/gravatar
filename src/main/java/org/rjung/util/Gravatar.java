@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.rjung.util.gravatar.Default;
 import org.rjung.util.gravatar.Rating;
@@ -16,9 +18,13 @@ import org.rjung.util.gravatar.Rating;
 public class Gravatar {
 
     private static final String GRAVATAR_IMAGE_BASE_URL = "http://www.gravatar.com/avatar/";
+    // I do not want to use any further dependency (like slf4j) to log any
+    // problems. For now I just use the simplest logger I can get. Any idea to
+    // handle this differently?
+    private static final Logger LOG = Logger.getAnonymousLogger();
 
     private static class GravatarHolder {
-        public static final Gravatar instance = new Gravatar();
+        public static final Gravatar INSTANCE = new Gravatar();
 
         private GravatarHolder() {
         }
@@ -40,7 +46,7 @@ public class Gravatar {
      * @return The Singleton instance of {@link Gravatar}.
      */
     public static Gravatar getInstance() {
-        return GravatarHolder.instance;
+        return GravatarHolder.INSTANCE;
     }
 
     /**
@@ -150,7 +156,7 @@ public class Gravatar {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; ++i) {
             sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(
-                    1, 3));
+                    1, 3)); // NOSONAR
         }
         return sb.toString();
     }
@@ -161,7 +167,9 @@ public class Gravatar {
             return hex(md.digest((email == null ? "" : email).trim()
                     .toLowerCase(Locale.getDefault()).getBytes("CP1252")));
         } catch (NoSuchAlgorithmException e) {
+            LOG.log(Level.CONFIG, e.getMessage(), e);
         } catch (UnsupportedEncodingException e) {
+            LOG.log(Level.CONFIG, e.getMessage(), e);
         }
         return null;
     }

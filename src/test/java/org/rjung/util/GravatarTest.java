@@ -11,7 +11,7 @@ import org.rjung.util.gravatar.Rating;
 public class GravatarTest extends TestCase {
 
     private static final String EXAMPLE_EMAIL = "example@example.com";
-    private static final String GRAVATAR_URL_FOR_EXAMPLE_EMAIL = "http://www.gravatar.com/avatar/23463b99b62a72f26ed677cc556c44e8";
+    private static final String GRAVATAR_URL_FOR_EXAMPLE_EMAIL = "http://www.gravatar.com/avatar/23463B99B62A72F26ED677CC556C44E8";
 
     @Test
     public void testInstanceDoesEncodeExampleEmailCorrectly() {

@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.rjung.util.gravatar.Default;
 import org.rjung.util.gravatar.Rating;
 
@@ -153,12 +155,7 @@ public class Gravatar {
     }
 
     private String hex(byte[] array) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < array.length; ++i) {
-            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(
-                    1, 3)); // NOSONAR
-        }
-        return sb.toString();
+        return DatatypeConverter.printHexBinary(array);
     }
 
     private String gravatarHex(String email) {

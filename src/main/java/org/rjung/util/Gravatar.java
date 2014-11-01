@@ -40,10 +40,6 @@ public class Gravatar {
      * best solution to this simple task. Still, there will be some further
      * improvement to this class. And a pure static approach will not be the
      * only solution. Providing a Singleton Access is a good solution for now.
-     * Accessing {@link Gravatar} via a internal static class
-     * {@link GravatarHolder} prevents instantiation of the class durcing
-     * compile time, but it will be available once {@link GravatarHolder} is
-     * accessed.
      * 
      * @return The Singleton instance of {@link Gravatar}.
      */
@@ -100,8 +96,8 @@ public class Gravatar {
      * @param rating
      *            Default Rating is
      *            "suitable for display on all websites with any audience type".
-     *            Depending on your visitors, you could allow other ratings (
-     *            {@link https://gravatar.com/site/implement/images/}).
+     *            Depending on your visitors, you could allow other ratings (<a
+     *            href="https://gravatar.com/site/implement/images/"https://gravatar.com/site/implement/images/</a>).
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, int size, Default def, Rating rating) {
@@ -141,8 +137,8 @@ public class Gravatar {
      * @param rating
      *            Default Rating is
      *            "suitable for display on all websites with any audience type".
-     *            Depending on your visitors, you could allow other ratings (
-     *            {@link https://gravatar.com/site/implement/images/}).
+     *            Depending on your visitors, you could allow other ratings (<a
+     *            href="https://gravatar.com/site/implement/images/"https://gravatar.com/site/implement/images/</a>).
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, Rating rating) {

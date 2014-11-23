@@ -124,6 +124,11 @@ public class Gravatar {
      * @param def
      *            Which default image should be used if no {@link Gravatar}
      *            -image is available.
+     * @param rating
+     *            Default Rating is
+     *            "suitable for display on all websites with any audience type".
+     *            Depending on your visitors, you could allow other ratings (<a
+     *            href="https://gravatar.com/site/implement/images/">https://gravatar.com/site/implement/images/</a>).
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, Default def, Rating rating) {

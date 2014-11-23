@@ -97,7 +97,7 @@ public class Gravatar {
      *            Default Rating is
      *            "suitable for display on all websites with any audience type".
      *            Depending on your visitors, you could allow other ratings (<a
-     *            href="https://gravatar.com/site/implement/images/"https://gravatar.com/site/implement/images/</a>).
+     *            href="https://gravatar.com/site/implement/images/">https://gravatar.com/site/implement/images/</a>).
      * @return Complete URL of the email-addresses {@link Gravatar}-image.
      */
     public String imageUrl(String email, int size, Default def, Rating rating) {

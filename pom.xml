@@ -52,6 +52,10 @@
     </developer>
   </developers>
 
+  <prerequisites>
+    <maven>3.0.4</maven>
+  </prerequisites>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

@@ -167,18 +167,22 @@ public class Gravatar {
      * Retrieve the URL of the {@link Gravatar}-image.
      *
      * @return {@link Gravatar}-image-url
+     * @throws GravatarException If some Character-encoding fails, you will receive a {@link GravatarException}.
      */
-    public String toUrl() {
+    public String toUrl() throws GravatarException {
         try {
             return appendParameters(protocol, Gravatar.pureImageUrl(email),
                     parameters);
         } catch (UnsupportedEncodingException e) {
             LOG.log(Level.WARNING, e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
+            throw new GravatarException(e.getMessage(), e);
+        } catch (NoSuchAlgorithmException e) {
+            LOG.log(Level.WARNING, e.getMessage(), e);
+            throw new GravatarException(e.getMessage(), e);
         }
     }
 
-    private static String pureImageUrl(String email) {
+    private static String pureImageUrl(String email) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         return new StringBuilder().append(GRAVATAR_IMAGE_BASE_URL)
                 .append(gravatarHex(email)).toString();
     }
@@ -187,19 +191,11 @@ public class Gravatar {
         return DatatypeConverter.printHexBinary(array);
     }
 
-    private static String gravatarHex(String email) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            return hex(md.digest((email == null ? "" : email).trim()
-                    .toLowerCase(Locale.getDefault())
-                    .getBytes(GRAVATAR_CHARSET)))
-                            .toLowerCase(Locale.getDefault());
-        } catch (NoSuchAlgorithmException e) {
-            LOG.log(Level.CONFIG, e.getMessage(), e);
-        } catch (UnsupportedEncodingException e) {
-            LOG.log(Level.CONFIG, e.getMessage(), e);
-        }
-        return null;
+    private static String gravatarHex(String email) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        return hex(md.digest((email == null ? "" : email).trim()
+                .toLowerCase(Locale.getDefault()).getBytes(GRAVATAR_CHARSET)))
+                        .toLowerCase(Locale.getDefault());
     }
 
     private static String appendParameters(Protocol protocol, String url,

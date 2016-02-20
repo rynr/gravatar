@@ -23,19 +23,19 @@ public class GravatarTest {
     private static final String GRAVATAR_URL_FOR_EXAMPLE_EMAIL = "://s.gravatar.com/avatar/23463b99b62a72f26ed677cc556c44e8";
 
     @Test
-    public void verifySimpleAvatarUrlEncodesCorrectly() {
+    public void verifySimpleAvatarUrlEncodesCorrectly() throws GravatarException {
         assertThat("Generated URL does not match expected URL",
                 Gravatar.forEmail(EXAMPLE_EMAIL).toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
     }
 
     @Test
-    public void verifyNoEmailDoesNotRaiseException() {
+    public void verifyNoEmailDoesNotRaiseException() throws GravatarException {
         Gravatar.forEmail(null).toUrl();
     }
 
     @Test
-    public void verifyProtocolCanBeChanged() {
+    public void verifyProtocolCanBeChanged() throws GravatarException {
         assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Protocol.HTTP).toUrl(),
                 equalTo("http" + GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
         assertThat(
@@ -46,12 +46,12 @@ public class GravatarTest {
     }
 
     @Test
-    public void verifyNoProtocolDoesNotRaiseException() {
+    public void verifyNoProtocolDoesNotRaiseException() throws GravatarException {
         Gravatar.forEmail(EXAMPLE_EMAIL).with((Protocol) null).toUrl();
     }
 
     @Test
-    public void verifyRatingCanBeSet() {
+    public void verifyRatingCanBeSet() throws GravatarException {
         assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.G).toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=g"));
         assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.PG).toUrl(),
@@ -63,7 +63,7 @@ public class GravatarTest {
     }
 
     @Test
-    public void verifyRatingCanBeCleared() {
+    public void verifyRatingCanBeCleared() throws GravatarException {
         Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.G);
         assertThat(builder.toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=g"));
@@ -72,7 +72,7 @@ public class GravatarTest {
     }
 
     @Test
-    public void verifySizeCanBeSet() {
+    public void verifySizeCanBeSet() throws GravatarException {
         assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).size(1).toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=1"));
         assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).size(80).toUrl(),
@@ -82,7 +82,7 @@ public class GravatarTest {
     }
 
     @Test
-    public void verifySizeCanBeCleared() {
+    public void verifySizeCanBeCleared() throws GravatarException {
         Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL).size(1);
         assertThat(builder.toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=1"));
@@ -101,7 +101,7 @@ public class GravatarTest {
     }
 
     @Test
-    public void verifyDefaultCanBeSet() {
+    public void verifyDefaultCanBeSet() throws GravatarException {
         assertThat(
                 Gravatar.forEmail(EXAMPLE_EMAIL)
                         .defaultImage(Default.FOUR_O_FOUR).toUrl(),
@@ -129,7 +129,7 @@ public class GravatarTest {
     }
 
     @Test
-    public void verifyDefaultCanBeCleared() {
+    public void verifyDefaultCanBeCleared() throws GravatarException {
         Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL)
                 .defaultImage(Default.FOUR_O_FOUR);
         assertThat(builder.toUrl(),
@@ -139,7 +139,7 @@ public class GravatarTest {
     }
 
     @Test
-    public void verifyDefaultUrlCanBeSet() throws UnsupportedEncodingException {
+    public void verifyDefaultUrlCanBeSet() throws UnsupportedEncodingException, GravatarException {
         assertThat(
                 Gravatar.forEmail(EXAMPLE_EMAIL)
                         .defaultImage(EXAMPLE_DEFAULT_URL).toUrl(),
@@ -150,7 +150,7 @@ public class GravatarTest {
 
     @Test
     public void verifyDefaultUrlCanBeCleared()
-            throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException, GravatarException {
         Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL)
                 .defaultImage(EXAMPLE_DEFAULT_URL);
         assertThat(builder.toUrl(),
@@ -163,7 +163,8 @@ public class GravatarTest {
 
     @Test
     public void verifyCompleteExample()
-            throws MalformedURLException, UnsupportedEncodingException {
+ throws MalformedURLException,
+            UnsupportedEncodingException, GravatarException {
         final Map<String, String> queryParameters = new HashMap<String, String>();
         String[] pairs = new URL(Gravatar.forEmail(EXAMPLE_EMAIL)
                 .defaultImage(Default.FOUR_O_FOUR).size(80).with(Protocol.HTTPS)

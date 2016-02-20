@@ -1,7 +1,5 @@
 package org.rjung.util.gravatar;
 
-import org.rjung.util.Gravatar;
-
 /**
  * In addition to allowing you to use your own image, Gravatar has a number of
  * built in options which you can also use as defaults. Most of these work by
@@ -44,15 +42,6 @@ public enum Default {
 
     private Default(String code) {
         this.code = code;
-    }
-
-    /**
-     * The parameter-value for {@link Gravatar}.
-     *
-     * @return the parameter value
-     */
-    public String getCode() {
-        return code;
     }
 
     @Override

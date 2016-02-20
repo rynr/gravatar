@@ -1,7 +1,5 @@
 package org.rjung.util.gravatar;
 
-import org.rjung.util.Gravatar;
-
 /**
  * Gravatar allows users to self-rate their images so that they can indicate if
  * an image is appropriate for a certain audience. By default, only 'G' rated
@@ -32,15 +30,6 @@ public enum Rating {
 
     private Rating(String code) {
         this.code = code;
-    }
-
-    /**
-     * The parameter-value for {@link Gravatar}.
-     *
-     * @return the parameter value
-     */
-    public String getCode() {
-        return code;
     }
 
     @Override

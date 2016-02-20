@@ -85,8 +85,7 @@ public class Gravatar {
      * by children) you can set a Rating-level. The information will be
      * transferred to gravatar.org to decide if the image can be shown. You can
      * find more about this at
-     * <a href="https://de.gravatar.com/site/implement/images/#rating">https://
-     * de.gravatar.com/site/implement/images/#rating</a><br>
+     * <a href="https://de.gravatar.com/site/implement/images/#rating">https://de.gravatar.com/site/implement/images/#rating</a><br>
      * The user of the image has himself set the {@link Rating}, so you still
      * rely on this.
      *
@@ -167,7 +166,9 @@ public class Gravatar {
      * Retrieve the URL of the {@link Gravatar}-image.
      *
      * @return {@link Gravatar}-image-url
-     * @throws GravatarException If some Character-encoding fails, you will receive a {@link GravatarException}.
+     * @throws GravatarException
+     *             If some Character-encoding fails, you will receive a
+     *             {@link GravatarException}.
      */
     public String toUrl() throws GravatarException {
         try {
@@ -182,7 +183,8 @@ public class Gravatar {
         }
     }
 
-    private static String pureImageUrl(String email) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    private static String pureImageUrl(String email)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
         return new StringBuilder().append(GRAVATAR_IMAGE_BASE_URL)
                 .append(gravatarHex(email)).toString();
     }
@@ -191,7 +193,8 @@ public class Gravatar {
         return DatatypeConverter.printHexBinary(array);
     }
 
-    private static String gravatarHex(String email) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    private static String gravatarHex(String email)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         return hex(md.digest((email == null ? "" : email).trim()
                 .toLowerCase(Locale.getDefault()).getBytes(GRAVATAR_CHARSET)))

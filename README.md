@@ -11,26 +11,38 @@ import org.rjung.util.Gravatar;
 
 class GravatarExample {
   public void main(String[] args) {
-    System.out.println(Gravatar.getInstance().imageUrl(
-        "example@example.com"));
+    System.out.println(Gravatar.forEmail("example@example.com").toUrl());
   }
 }
 ```
 
-There are other parameters you can set for the generation, like size, [`Default` and `Rating`](https://en.gravatar.com/site/implement/images/).
-`Default` gives a alternative to the default gravatar-default-image, if no gravatar is defined.
-Currently no self-defined image is supported (will be fixed in [Issue#3](https://github.com/rynr/gravatar/issues/3)).
-To define a `Rating` or `Default`, just use other `imageUrl`-methods providing these fields.
+There are other parameters you can set for the generation, like size,
+[`Default` and `Rating`](https://en.gravatar.com/site/implement/images/).  
+`Default` gives a alternative to the default gravatar-default-image, if no
+gravatar is defined.  
+To define a `Rating` or `Default`, add the information before you build the url
+using `toUrl()`.  
+If you need a `https`-URL, you can also set the protocol via `with(Protocol)`.
+There are three Protocol-definitions, `HTTP` provides a `http://..`-url,
+accordingly `HTTPS` provides the `https://..`-url. The default is `NONE`, the
+url now starts with `://..`, a browser will choose the same protocol as
+currently used.
 
 ```java
 import org.rjung.util.Gravatar;
 import org.rjung.util.gravatar.Default;
+import org.rjung.util.gravatar.Protocol;
 import org.rjung.util.gravatar.Rating;
 
 class GravatarExample {
   public void main(String[] args) {
-    System.out.println(Gravatar.getInstance().imageUrl(
-        "example@example.com", 123, Default.MONSTERID, Rating.X));
+    System.out.println(
+      Gravatar.forEmail("example@example.com")
+          .with(Protocol.HTTPS)     // prepend https://
+          .size(123)                // set the size to 123 pixel
+          .defaultImage(Default.MM) // if not available show mystery man image
+          .with(Rating.X)           // set rating to X
+          .toUrl());
   }
 }
 ```
@@ -41,19 +53,20 @@ Once it's commited to central maven, you can use the following dependency-defini
 
 | framework |          |
 | --------: | -------- |
-| maven     | `<dependency><groupId>org.rjung.util</groupId><artifactId>gravatar</artifactId><version>0.1</version></dependency>` |
-| ivy       | `<dependency org="org.rjung.util" name="gravatar" rev="0.1"/>` |
-| grape     | `@Grab(group='org.rjung.util', module='gravatar', version='0.1')` |
-| gradle    | `'org.rjung.util:gravatar:0.1'` |
-| buildr    | `'org.rjung.util:gravatar:jar:0.1'` |
-| sbt       | `libraryDependencies += "org.rjung.util" % "gravatar" % "0.1"` |
-| leiningen | `[org.rjung.util/gravatar "0.1"]` |
+| maven     | `<dependency><groupId>org.rjung.util</groupId><artifactId>gravatar</artifactId><version>1.0</version></dependency>` |
+| ivy       | `<dependency org="org.rjung.util" name="gravatar" rev="1.0"/>` |
+| grape     | `@Grab(group='org.rjung.util', module='gravatar', version='1.0')` |
+| gradle    | `'org.rjung.util:gravatar:1.0'` |
+| buildr    | `'org.rjung.util:gravatar:jar:1.0'` |
+| sbt       | `libraryDependencies += "org.rjung.util" % "gravatar" % "1.0"` |
+| leiningen | `[org.rjung.util/gravatar "1.0"]` |
 
 
 Links:
 ------
 
  - [Info](https://rynr.github.io/gravatar/)
+ - [API Doc](http://www.javadoc.io/doc/org.rjung.util/gravatar)
  - [Github](https://github.com/rynr/gravatar)
  - [Bugs](https://github.com/rynr/gravatar/issues)
  - [![Build Status](https://travis-ci.org/rynr/gravatar.svg?branch=master)](https://travis-ci.org/rynr/gravatar)

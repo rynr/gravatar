@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.rjung.util.Gravatar.Builder;
 import org.rjung.util.gravatar.Default;
 import org.rjung.util.gravatar.Protocol;
 import org.rjung.util.gravatar.Rating;
@@ -65,7 +64,7 @@ public class GravatarTest {
 
     @Test
     public void verifyRatingCanBeCleared() {
-        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.G);
+        Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.G);
         assertThat(builder.toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=g"));
         assertThat(builder.with((Rating) null).toUrl(),
@@ -84,7 +83,7 @@ public class GravatarTest {
 
     @Test
     public void verifySizeCanBeCleared() {
-        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL).size(1);
+        Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL).size(1);
         assertThat(builder.toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=1"));
         assertThat(builder.size(null).toUrl(),
@@ -131,7 +130,7 @@ public class GravatarTest {
 
     @Test
     public void verifyDefaultCanBeCleared() {
-        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL)
+        Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL)
                 .defaultImage(Default.FOUR_O_FOUR);
         assertThat(builder.toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=404"));
@@ -152,7 +151,7 @@ public class GravatarTest {
     @Test
     public void verifyDefaultUrlCanBeCleared()
             throws UnsupportedEncodingException {
-        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL)
+        Gravatar builder = Gravatar.forEmail(EXAMPLE_EMAIL)
                 .defaultImage(EXAMPLE_DEFAULT_URL);
         assertThat(builder.toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d="

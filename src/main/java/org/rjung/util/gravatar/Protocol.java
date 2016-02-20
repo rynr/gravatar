@@ -10,6 +10,11 @@ public enum Protocol {
         this.prefix = prefix;
     }
 
+    /**
+     * The value to be prefixed to the URL before the hostname.
+     *
+     * @return protocol-prefix
+     */
     public String getPrefix() {
         return prefix;
     }

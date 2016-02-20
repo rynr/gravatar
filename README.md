@@ -47,21 +47,6 @@ class GravatarExample {
 }
 ```
 
-Dependency
-----------
-Once it's commited to central maven, you can use the following dependency-definitions:
-
-| framework |          |
-| --------: | -------- |
-| maven     | `<dependency><groupId>org.rjung.util</groupId><artifactId>gravatar</artifactId><version>1.0</version></dependency>` |
-| ivy       | `<dependency org="org.rjung.util" name="gravatar" rev="1.0"/>` |
-| grape     | `@Grab(group='org.rjung.util', module='gravatar', version='1.0')` |
-| gradle    | `'org.rjung.util:gravatar:1.0'` |
-| buildr    | `'org.rjung.util:gravatar:jar:1.0'` |
-| sbt       | `libraryDependencies += "org.rjung.util" % "gravatar" % "1.0"` |
-| leiningen | `[org.rjung.util/gravatar "1.0"]` |
-
-
 Links:
 ------
 

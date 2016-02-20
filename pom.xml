@@ -49,6 +49,9 @@
         <role>developer</role>
       </roles>
       <timezone>+1</timezone>
+      <properties>
+        <picUrl>://www.gravatar.com/avatar/dbbb1fe6f3dadb869804e4b6ad374936</picUrl>
+      </properties>
     </developer>
   </developers>
 

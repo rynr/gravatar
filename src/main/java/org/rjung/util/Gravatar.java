@@ -1,174 +1,160 @@
 package org.rjung.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.rjung.util.gravatar.Default;
+import org.rjung.util.gravatar.Protocol;
 import org.rjung.util.gravatar.Rating;
 
 /**
- * {@link Gravatar} provides you different methods to easily retrieve a
- * Gravatar-URL. This first version just allows Singleton-access to the methods.
+ * {@link Gravatar} provides you a simple methods retrieve a Gravatar-URL. This
+ * version uses a builder to generate the URL.<br>
+ * The easiest way is to use:
+ * <code>Gravatar.forEmail("example@example.com").toUrl();</code>
  *
  */
 public class Gravatar {
 
-	private static final String GRAVATAR_IMAGE_BASE_URL = "http://www.gravatar.com/avatar/";
-	// I do not want to use any further dependency (like slf4j) to log any
-	// problems. For now I just use the simplest logger I can get. Any idea to
-	// handle this differently?
-	private static final Logger LOG = Logger.getAnonymousLogger();
+    static final String GRAVATAR_CHARSET = "CP1252";
+    static final String GRAVATAR_IMAGE_BASE_URL = "s.gravatar.com/avatar/";
+    // I do not want to use any further dependency (like slf4j) to log any
+    // problems. For now I just use the simplest logger I can get. Any idea to
+    // handle this differently?
+    private static final Logger LOG = Logger.getAnonymousLogger();
 
-	private static class GravatarHolder {
-		public static final Gravatar INSTANCE = new Gravatar();
+    /**
+     * Start here to build a Gravatar-URL.
+     */
+    public static Builder forEmail(String email) {
+        return new Builder(email);
+    }
 
-		private GravatarHolder() {
-		}
-	}
+    private static String pureImageUrl(String email) {
+        return new StringBuilder().append(GRAVATAR_IMAGE_BASE_URL)
+                .append(gravatarHex(email)).toString();
+    }
 
-	/**
-	 * If you want to have a email converted to a Gravatar URL, you need to get
-	 * an instance of {@link Gravatar}.
-	 * 
-	 * Static access is not the best solution, though it might seem to be the
-	 * best solution to this simple task. Still, there will be some further
-	 * improvement to this class. And a pure static approach will not be the
-	 * only solution. Providing a Singleton Access is a good solution for now.
-	 * 
-	 * @return The Singleton instance of {@link Gravatar}.
-	 */
-	public static Gravatar getInstance() {
-		return GravatarHolder.INSTANCE;
-	}
+    private static String hex(byte[] array) {
+        return DatatypeConverter.printHexBinary(array);
+    }
 
-	/**
-	 * 
-	 * @param email
-	 *            Provide the email-address that is wanted to be converted.
-	 * @return Complete URL of the email-addresses {@link Gravatar}-image.
-	 */
-	public String imageUrl(String email) {
-		return pureImageUrl(email);
-	}
+    private static String gravatarHex(String email) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            return hex(md.digest((email == null ? "" : email).trim()
+                    .toLowerCase(Locale.getDefault())
+                    .getBytes(GRAVATAR_CHARSET)))
+                            .toLowerCase(Locale.getDefault());
+        } catch (NoSuchAlgorithmException e) {
+            LOG.log(Level.CONFIG, e.getMessage(), e);
+        } catch (UnsupportedEncodingException e) {
+            LOG.log(Level.CONFIG, e.getMessage(), e);
+        }
+        return null;
+    }
 
-	/**
-	 * 
-	 * @param email
-	 *            Provide the email-address that is wanted to be converted.
-	 * @param size
-	 *            The size of the gravatar image
-	 * @return Complete URL of the email-addresses {@link Gravatar}-image.
-	 */
-	public String imageUrl(String email, int size) {
-		return imageUrl(email) + "?s=" + size;
-	}
+    public static class Builder {
+        private static final String PARAM_DEFAULT = "d";
+        private static final String PARAM_RATING = "r";
+        private static final String PARAM_SIZE = "s";
+        private String email;
+        private Protocol protocol;
+        private Map<String, Object> parameters;
 
-	/**
-	 * 
-	 * @param email
-	 *            Provide the email-address that is wanted to be converted.
-	 * @param size
-	 *            The size of the gravatar image
-	 * @param def
-	 *            Which default image should be used if no {@link Gravatar}
-	 *            -image is available.
-	 * @return Complete URL of the email-addresses {@link Gravatar}-image.
-	 */
-	public String imageUrl(String email, int size, Default def) {
-		return imageUrl(email, size) + "&d=" + def.getCode();
-	}
+        public Builder(String email) {
+            this.email = email;
+            this.protocol = Protocol.NONE;
+            this.parameters = new HashMap<String, Object>();
+        }
 
-	/**
-	 * 
-	 * @param email
-	 *            Provide the email-address that is wanted to be converted.
-	 * @param size
-	 *            The size of the gravatar image
-	 * @param def
-	 *            Which default image should be used if no {@link Gravatar}
-	 *            -image is available.
-	 * @param rating
-	 *            Default Rating is
-	 *            "suitable for display on all websites with any audience type".
-	 *            Depending on your visitors, you could allow other ratings
-	 *            (https://gravatar.com/site/implement/images/).
-	 * @return Complete URL of the email-addresses {@link Gravatar}-image.
-	 */
-	public String imageUrl(String email, int size, Default def, Rating rating) {
-		return imageUrl(email, size, def) + "&r=" + rating.getCode();
-	}
+        private static String appendParameters(Protocol protocol, String url,
+                Map<String, Object> parameters)
+                        throws UnsupportedEncodingException {
+            StringBuilder result = new StringBuilder(protocol.getPrefix());
+            result.append(url);
+            Iterator<Entry<String, Object>> iterator = parameters.entrySet()
+                    .iterator();
+            if (iterator.hasNext()) {
+                result.append(url.contains("?") ? "&" : "?");
+                while (iterator.hasNext()) {
+                    Entry<String, Object> entry = iterator.next();
+                    result.append(entry.getKey());
+                    result.append("=");
+                    result.append(URLEncoder.encode(entry.getValue().toString(),
+                            GRAVATAR_CHARSET));
+                    if (iterator.hasNext()) {
+                        result.append("&");
+                    }
+                }
+            }
+            return result.toString();
+        }
 
-	/**
-	 * 
-	 * @param email
-	 *            Provide the email-address that is wanted to be converted.
-	 * @param def
-	 *            Which default image should be used if no {@link Gravatar}
-	 *            -image is available.
-	 * @return Complete URL of the email-addresses {@link Gravatar}-image.
-	 */
-	public String imageUrl(String email, Default def) {
-		return imageUrl(email) + "?d=" + def.getCode();
-	}
+        public Builder with(Protocol protocol) {
+            if (protocol != null)
+                this.protocol = protocol;
+            return this;
+        }
 
-	/**
-	 * 
-	 * @param email
-	 *            Provide the email-address that is wanted to be converted.
-	 * @param def
-	 *            Which default image should be used if no {@link Gravatar}
-	 *            -image is available.
-	 * @param rating
-	 *            Default Rating is
-	 *            "suitable for display on all websites with any audience type".
-	 *            Depending on your visitors, you could allow other ratings
-	 *            (https://gravatar.com/site/implement/images/).
-	 * @return Complete URL of the email-addresses {@link Gravatar}-image.
-	 */
-	public String imageUrl(String email, Default def, Rating rating) {
-		return imageUrl(email, def) + "&r=" + rating.getCode();
-	}
+        public Builder with(Rating rating) {
+            if (rating == null) {
+                this.parameters.remove(PARAM_RATING);
+            } else {
+                this.parameters.put(PARAM_RATING, rating);
+            }
+            return this;
+        }
 
-	/**
-	 * 
-	 * @param email
-	 *            Provide the email-address that is wanted to be converted.
-	 * @param rating
-	 *            Default Rating is
-	 *            "suitable for display on all websites with any audience type".
-	 *            Depending on your visitors, you could allow other ratings
-	 *            (https://gravatar.com/site/implement/images/).
-	 * @return Complete URL of the email-addresses {@link Gravatar}-image.
-	 */
-	public String imageUrl(String email, Rating rating) {
-		return imageUrl(email) + "?r=" + rating.getCode();
-	}
+        public Builder size(Integer size) {
+            if (size == null) {
+                this.parameters.remove(PARAM_SIZE);
+            } else if (size.intValue() < 1 || size.intValue() > 2048) {
+                throw new IllegalArgumentException(
+                        "size needs to be within 1 and 2048");
+            } else {
+                this.parameters.put(PARAM_SIZE, size);
+            }
+            return this;
+        }
 
-	private String pureImageUrl(String email) {
-		return new StringBuilder().append(GRAVATAR_IMAGE_BASE_URL)
-				.append(gravatarHex(email)).toString();
-	}
+        public Builder defaultImage(String url) {
+            if (url == null) {
+                this.parameters.remove(PARAM_DEFAULT);
+            } else {
+                this.parameters.put(PARAM_DEFAULT, url);
+            }
+            return this;
+        }
 
-	private String hex(byte[] array) {
-		return DatatypeConverter.printHexBinary(array);
-	}
+        public Builder defaultImage(Default defaultImage) {
+            if (defaultImage == null) {
+                this.parameters.remove(PARAM_DEFAULT);
+            } else {
+                this.parameters.put(PARAM_DEFAULT, defaultImage);
+            }
+            return this;
+        }
 
-	private String gravatarHex(String email) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			return hex(md.digest((email == null ? "" : email).trim()
-					.toLowerCase(Locale.getDefault()).getBytes("CP1252")));
-		} catch (NoSuchAlgorithmException e) {
-			LOG.log(Level.CONFIG, e.getMessage(), e);
-		} catch (UnsupportedEncodingException e) {
-			LOG.log(Level.CONFIG, e.getMessage(), e);
-		}
-		return null;
-	}
+        public String toUrl() {
+            try {
+                return appendParameters(protocol, Gravatar.pureImageUrl(email),
+                        parameters);
+            } catch (UnsupportedEncodingException e) {
+                LOG.log(Level.WARNING, e.getMessage(), e);
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+    }
 }

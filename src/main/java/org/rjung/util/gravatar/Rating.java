@@ -15,6 +15,6 @@ public enum Rating {
 
     @Override
     public String toString() {
-        return "<" + name() + " code=\"" + getCode() + "\">";
+        return code;
     }
 }

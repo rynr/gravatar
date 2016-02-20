@@ -2,84 +2,186 @@ package org.rjung.util;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import junit.framework.TestCase;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
+import org.rjung.util.Gravatar.Builder;
 import org.rjung.util.gravatar.Default;
+import org.rjung.util.gravatar.Protocol;
 import org.rjung.util.gravatar.Rating;
 
-public class GravatarTest extends TestCase {
+public class GravatarTest {
 
+    private static final String EXAMPLE_DEFAULT_URL = "http://some.url/to/image.png";
     private static final String EXAMPLE_EMAIL = "example@example.com";
-    private static final String GRAVATAR_URL_FOR_EXAMPLE_EMAIL = "http://www.gravatar.com/avatar/23463B99B62A72F26ED677CC556C44E8";
+    private static final String GRAVATAR_URL_FOR_EXAMPLE_EMAIL = "://s.gravatar.com/avatar/23463b99b62a72f26ed677cc556c44e8";
 
     @Test
-    public void testInstanceDoesEncodeExampleEmailCorrectly() {
-        assertThat(Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL),
+    public void verifySimpleAvatarUrlEncodesCorrectly() {
+        assertThat("Generated URL does not match expected URL",
+                Gravatar.forEmail(EXAMPLE_EMAIL).toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
     }
 
     @Test
-    public void testInstanceDoesTrimExampleEmail() {
+    public void verifyNoEmailDoesNotRaiseException() {
+        Gravatar.forEmail(null).toUrl();
+    }
+
+    @Test
+    public void verifyProtocolCanBeChanged() {
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Protocol.HTTP).toUrl(),
+                equalTo("http" + GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
         assertThat(
-                Gravatar.getInstance().imageUrl(
-                        "     example@example.com            "),
+                Gravatar.forEmail(EXAMPLE_EMAIL).with(Protocol.HTTPS).toUrl(),
+                equalTo("https" + GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Protocol.NONE).toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
     }
 
     @Test
-    public void testInstanceDoesLowercaseExampleEmail() {
-        assertThat(Gravatar.getInstance().imageUrl("eXaMpLe@eXaMpLe.cOm"),
-                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
+    public void verifyNoProtocolDoesNotRaiseException() {
+        Gravatar.forEmail(EXAMPLE_EMAIL).with((Protocol) null).toUrl();
     }
 
     @Test
-    public void testNotDefinedEmailDoesNotRaiseExceptions() {
-        Gravatar.getInstance().imageUrl(null);
-    }
-
-    @Test
-    public void testGravatarWithSize() {
-        assertThat(Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL, 123),
-                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=123"));
-    }
-
-    @Test
-    public void testGravatarWithSizeAndDefault() {
-        assertThat(
-                Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL, 123,
-                        Default.MONSTERID),
-                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=123&d=monsterid"));
-    }
-
-    @Test
-    public void testGravatarWithDefault() {
-        assertThat(
-                Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL,
-                        Default.MONSTERID),
-                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=monsterid"));
-    }
-
-    @Test
-    public void testGravatarWithDefaultAndRating() {
-        assertThat(
-                Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL,
-                        Default.MONSTERID, Rating.R),
-                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=monsterid&r=r"));
-    }
-
-    @Test
-    public void testGravatarWithRating() {
-        assertThat(Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL, Rating.PG),
+    public void verifyRatingCanBeSet() {
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.G).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=g"));
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.PG).toUrl(),
                 equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=pg"));
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.R).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=r"));
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.X).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=x"));
     }
 
     @Test
-    public void testGravatarWithSizeDefaultAndRating() {
+    public void verifyRatingCanBeCleared() {
+        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL).with(Rating.G);
+        assertThat(builder.toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?r=g"));
+        assertThat(builder.with((Rating) null).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
+    }
+
+    @Test
+    public void verifySizeCanBeSet() {
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).size(1).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=1"));
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).size(80).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=80"));
+        assertThat(Gravatar.forEmail(EXAMPLE_EMAIL).size(2048).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=2048"));
+    }
+
+    @Test
+    public void verifySizeCanBeCleared() {
+        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL).size(1);
+        assertThat(builder.toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?s=1"));
+        assertThat(builder.size(null).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void verifyToSmallSizeRaises() {
+        Gravatar.forEmail(EXAMPLE_EMAIL).size(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void verifyToBigSizeRaises() {
+        Gravatar.forEmail(EXAMPLE_EMAIL).size(2049);
+    }
+
+    @Test
+    public void verifyDefaultCanBeSet() {
         assertThat(
-                Gravatar.getInstance().imageUrl(EXAMPLE_EMAIL, 123,
-                        Default.MONSTERID, Rating.X),
-                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL
-                        + "?s=123&d=monsterid&r=x"));
+                Gravatar.forEmail(EXAMPLE_EMAIL)
+                        .defaultImage(Default.FOUR_O_FOUR).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=404"));
+        assertThat(
+                Gravatar.forEmail(EXAMPLE_EMAIL).defaultImage(Default.IDENTICON)
+                        .toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=identicon"));
+        assertThat(
+                Gravatar.forEmail(EXAMPLE_EMAIL).defaultImage(Default.MM)
+                        .toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=mm"));
+        assertThat(
+                Gravatar.forEmail(EXAMPLE_EMAIL).defaultImage(Default.MONSTERID)
+                        .toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=monsterid"));
+        assertThat(
+                Gravatar.forEmail(EXAMPLE_EMAIL).defaultImage(Default.RETRO)
+                        .toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=retro"));
+        assertThat(
+                Gravatar.forEmail(EXAMPLE_EMAIL).defaultImage(Default.WAVATAR)
+                        .toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=wavatar"));
+    }
+
+    @Test
+    public void verifyDefaultCanBeCleared() {
+        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL)
+                .defaultImage(Default.FOUR_O_FOUR);
+        assertThat(builder.toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d=404"));
+        assertThat(builder.defaultImage((Default) null).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
+    }
+
+    @Test
+    public void verifyDefaultUrlCanBeSet() throws UnsupportedEncodingException {
+        assertThat(
+                Gravatar.forEmail(EXAMPLE_EMAIL)
+                        .defaultImage(EXAMPLE_DEFAULT_URL).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d="
+                        + URLEncoder.encode(EXAMPLE_DEFAULT_URL,
+                                Gravatar.GRAVATAR_CHARSET)));
+    }
+
+    @Test
+    public void verifyDefaultUrlCanBeCleared()
+            throws UnsupportedEncodingException {
+        Builder builder = Gravatar.forEmail(EXAMPLE_EMAIL)
+                .defaultImage(EXAMPLE_DEFAULT_URL);
+        assertThat(builder.toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL + "?d="
+                        + URLEncoder.encode(EXAMPLE_DEFAULT_URL,
+                                Gravatar.GRAVATAR_CHARSET)));
+        assertThat(builder.defaultImage((String) null).toUrl(),
+                equalTo(GRAVATAR_URL_FOR_EXAMPLE_EMAIL));
+    }
+
+    @Test
+    public void verifyCompleteExample()
+            throws MalformedURLException, UnsupportedEncodingException {
+        final Map<String, String> queryParameters = new HashMap<String, String>();
+        String[] pairs = new URL(Gravatar.forEmail(EXAMPLE_EMAIL)
+                .defaultImage(Default.FOUR_O_FOUR).size(80).with(Protocol.HTTPS)
+                .with(Rating.PG).toUrl()).getQuery().split("&");
+        for (String pair : pairs) {
+            final int idx = pair.indexOf("=");
+            final String key = idx > 0 ? URLDecoder.decode(
+                    pair.substring(0, idx), Gravatar.GRAVATAR_CHARSET) : pair;
+            final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder
+                    .decode(pair.substring(idx + 1), Gravatar.GRAVATAR_CHARSET)
+                    : null;
+            queryParameters.put(key, value);
+        }
+
+        assertThat(queryParameters.size(), equalTo(3));
+        assertThat(queryParameters.get("r"), equalTo("pg"));
+        assertThat(queryParameters.get("s"), equalTo("80"));
+        assertThat(queryParameters.get("d"), equalTo("404"));
     }
 }

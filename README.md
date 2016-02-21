@@ -54,5 +54,5 @@ Links:
  - [API Doc](http://www.javadoc.io/doc/org.rjung.util/gravatar)
  - [Github](https://github.com/rynr/gravatar)
  - [Bugs](https://github.com/rynr/gravatar/issues)
- - [![Build Status](https://travis-ci.org/rynr/gravatar.svg?branch=master)](https://travis-ci.org/rynr/gravatar)
+ - [![Build Status](https://travis-ci.org/rynr/gravatar.svg?branch=master)](https://travis-ci.org/rynr/gravatar) [![Maven Central](https://img.shields.io/maven-central/v/org.rjung.util/gravatar.svg)](http://mvnrepository.com/artifact/org.rjung.util/gravatar) [![Github Releases](https://img.shields.io/github/downloads/rynr/gravatar/latest/total.svg)](https://github.com/rynr/gravatar/releases) [![codecov.io](https://codecov.io/github/rynr/gravatar/coverage.svg?branch=master)](https://codecov.io/github/rynr/gravatar?branch=master)
 

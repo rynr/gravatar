@@ -12,15 +12,15 @@ public class GravatarException extends Exception {
         super();
     }
 
-    public GravatarException(String message) {
+    public GravatarException(final String message) {
         super(message);
     }
 
-    public GravatarException(String message, Throwable cause) {
+    public GravatarException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public GravatarException(Throwable cause) {
+    public GravatarException(final Throwable cause) {
         super(cause);
     }
 

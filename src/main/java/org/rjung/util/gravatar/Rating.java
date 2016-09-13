@@ -26,10 +26,14 @@ public enum Rating {
      */
     X("x");
 
-    String code;
+    private String code;
 
-    private Rating(String code) {
-        this.code = code;
+    Rating(final String pCode) {
+        this.code = pCode;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     @Override

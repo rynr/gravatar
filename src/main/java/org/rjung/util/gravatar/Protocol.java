@@ -6,8 +6,8 @@ public enum Protocol {
 
     private final String prefix;
 
-    private Protocol(String prefix) {
-        this.prefix = prefix;
+    Protocol(final String pPrefix) {
+        this.prefix = pPrefix;
     }
 
     /**

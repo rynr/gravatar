@@ -38,10 +38,10 @@ public enum Default {
      */
     BLANK("blank");
 
-    String code;
+    private String code;
 
-    private Default(String code) {
-        this.code = code;
+    Default(final String pCode) {
+        this.code = pCode;
     }
 
     @Override

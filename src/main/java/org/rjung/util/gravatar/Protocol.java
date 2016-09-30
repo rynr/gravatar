@@ -1,8 +1,23 @@
 package org.rjung.util.gravatar;
 
+/**
+ * Unencrypted http and encrypted https are the standard protocol-options for a
+ * gravatar image.
+ */
 public enum Protocol {
-
-    HTTP("http://"), HTTPS("https://"), NONE("://");
+    /**
+     * The protocol will be non-encrypted http.
+     */
+    HTTP("http://"),
+    /**
+     * The protocol will be encrypted https.
+     */
+    HTTPS("https://"),
+    /**
+     * The protocol will be dependent on the protocol of the page that requests
+     * the gravatar.
+     */
+    NONE("://");
 
     private final String prefix;
 

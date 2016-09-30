@@ -32,6 +32,10 @@ public enum Rating {
         this.code = pCode;
     }
 
+    /**
+     * Get the string representation of the {@link Rating} for gravatar.
+     * @returns The string-representation of the {@link Rating} for gravatar.
+     */
     public String getCode() {
         return code;
     }

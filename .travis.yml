@@ -3,5 +3,3 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 sudo: false
-script: ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.host.url=https://sonarqube.com
-

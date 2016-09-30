@@ -182,9 +182,7 @@ public final class Gravatar {
         try {
             return appendParameters(protocol, Gravatar.pureImageUrl(email),
                     parameters);
-        } catch (UnsupportedEncodingException e) {
-            throw new GravatarException(e.getMessage(), e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
             throw new GravatarException(e.getMessage(), e);
         }
     }

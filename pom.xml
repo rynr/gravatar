@@ -50,13 +50,13 @@
       </roles>
       <timezone>+1</timezone>
       <properties>
-        <picUrl>://www.gravatar.com/avatar/dbbb1fe6f3dadb869804e4b6ad374936</picUrl>
+        <picUrl>://s.gravatar.com/avatar/88c13904e426e3979ec262f664c34874</picUrl>
       </properties>
     </developer>
   </developers>
 
   <prerequisites>
-    <maven>3.0.4</maven>
+    <maven>3.3.3</maven>
   </prerequisites>
 
   <dependencies>

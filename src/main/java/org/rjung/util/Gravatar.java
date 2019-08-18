@@ -1,11 +1,5 @@
 package org.rjung.util;
 
-import org.rjung.util.gravatar.Default;
-import org.rjung.util.gravatar.Protocol;
-import org.rjung.util.gravatar.Rating;
-
-import javax.xml.bind.DatatypeConverter;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
@@ -15,6 +9,9 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.rjung.util.gravatar.Default;
+import org.rjung.util.gravatar.Protocol;
+import org.rjung.util.gravatar.Rating;
 
 /**
  * {@link Gravatar} provides you a simple methods retrieve a Gravatar-URL. This
@@ -28,13 +25,14 @@ public final class Gravatar {
     private static final int GRAVATAR_SIZE_MAX = 2048;
     private static final String GRAVATAR_CHARSET = "CP1252";
     private static final String GRAVATAR_IMAGE_BASE_URL = "s.gravatar.com/avatar/";
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final String PARAM_DEFAULT = "d";
     private static final String PARAM_RATING = "r";
     private static final String PARAM_SIZE = "s";
 
-    private String email;
+    private final String email;
     private Protocol protocol;
-    private Map<String, Object> parameters;
+    private final Map<String, Object> parameters;
 
     private Gravatar(final String pEmail) {
         this(pEmail, Protocol.NONE, new HashMap<String, Object>());
@@ -194,12 +192,18 @@ public final class Gravatar {
     }
 
     private static String hex(final byte[] pArray) {
-        return DatatypeConverter.printHexBinary(pArray);
+      final StringBuilder result = new StringBuilder();
+      for (final byte element : pArray) {
+          final int v = element & 0xFF;
+          result.append(HEX_ARRAY[v >>> 4]);
+          result.append(HEX_ARRAY[v & 0x0F]);
+      }
+      return result.toString();
     }
 
     private static String gravatarHex(final String pEmail)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
+        final MessageDigest md = MessageDigest.getInstance("MD5");
         return hex(md.digest((pEmail == null ? "" : pEmail).trim()
                 .toLowerCase(Locale.getDefault()).getBytes(GRAVATAR_CHARSET)))
                         .toLowerCase(Locale.getDefault());
@@ -208,14 +212,14 @@ public final class Gravatar {
     private static String appendParameters(final Protocol pProtocol,
             final String pUrl, final Map<String, Object> pParameters)
             throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder(pProtocol.getPrefix());
+        final StringBuilder result = new StringBuilder(pProtocol.getPrefix());
         result.append(pUrl);
-        Iterator<Entry<String, Object>> iterator = pParameters.entrySet()
+        final Iterator<Entry<String, Object>> iterator = pParameters.entrySet()
                 .iterator();
         if (iterator.hasNext()) {
             result.append(pUrl.contains("?") ? "&" : "?");
             while (iterator.hasNext()) {
-                Entry<String, Object> entry = iterator.next();
+                final Entry<String, Object> entry = iterator.next();
                 result.append(entry.getKey());
                 result.append("=");
                 result.append(URLEncoder.encode(entry.getValue().toString(),

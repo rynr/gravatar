@@ -1,0 +1,8 @@
+title: Gravatar
+description: Simple Java Gravatar-Library
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-hacker
+
+gems:
+  - jekyll-mentions
